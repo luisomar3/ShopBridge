@@ -4,7 +4,7 @@ from shopbridge import db
 
 items_bp = Blueprint('items_bp', __name__, url_prefix='/api/items')
 
-@items.route('/', methods=['POST'])
+@items_bp.route('/', methods=['POST'])
 async def create_item():
     data = request.json
     name = data.get('name')
