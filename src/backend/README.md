@@ -46,11 +46,14 @@ The API of the Shopbridge application is RESTful and uses JSON for data exchange
 | POST   | /api/auth/login | Login as an existing user. | No |
 | DELETE | /api/auth/logout | Logout the current user. | Yes |
 | POST   | /api/auth/refresh | Refresh the access token of the current user. | Yes |
-| GET    | /api/items | Get a list of all items. | No |
-| GET    | /api/items/<int:id> | Get a item by ID. | No |
+| GET    | /api/items | Get a list of all items. | Yes |
+| GET    | /api/items/<int:id> | Get a item by ID. | Yes |
 | POST   | /api/items | Create a new item. | Yes |
 | PUT    | /api/items/<int:id> | Update a item by ID. | Yes |
 | DELETE | /api/items/<int:id> | Delete a item by ID. | Yes |
+| GET    | /api/items/ping | Test API condition | No |
+
+
 
 
 ## Attributes

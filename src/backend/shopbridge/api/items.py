@@ -102,11 +102,7 @@ async def bulk_insert_items():
     db.session.commit()
     return jsonify({'message': f'{len(items)} items inserted.'})
 
-
-@items_bp.route("/health")
+@items_bp.route("/ping",mmethods=['GET'])
 @jwt_required()
 def health():
-    current_user = get_jwt_identity() 
-    if not current_user:
-        return jsonify({'error': 'User not authenticated.'}), 401
     return Response("OK", status=200)
