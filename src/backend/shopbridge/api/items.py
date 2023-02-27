@@ -103,6 +103,5 @@ async def bulk_insert_items():
     return jsonify({'message': f'{len(items)} items inserted.'})
 
 @items_bp.route("/ping",methods=['GET'])
-@jwt_required()
 def health():
     return Response("OK", status=200)
