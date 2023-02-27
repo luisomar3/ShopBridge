@@ -35,7 +35,7 @@ The following environment variables can be used to configure the application:
 | JWT_BLACKLIST_TOKEN_CHECKS | The token checks that are performed when revoking tokens.               |
 
 
-##API Reference
+#API Reference
 -------------
 
 The API of the Shopbridge application is RESTful and uses JSON for data exchange. Here are the available endpoints:
