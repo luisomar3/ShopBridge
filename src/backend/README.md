@@ -23,25 +23,35 @@ Shopbridge is a web application that allows users to manage their inventory, add
 
 The following environment variables can be used to configure the application:
 
-- `FLASK_APP`: The name of the Flask application.
-- `FLASK_ENV`: The environment in which the application is running.
-- `SECRET_KEY`: The secret key used for encrypting data.
-- `DATABASE_URL`: The URL for the PostgreSQL database.
-- `JWT_ACCESS_TOKEN_EXPIRES`: The time in seconds for the access token to expire.
-- `JWT_REFRESH_TOKEN_EXPIRES`: The time in seconds for the refresh token to expire.
-- `JWT_BLACKLIST_ENABLED`: Boolean value to enable/disable token revocation.
-- `JWT_BLACKLIST_TOKEN_CHECKS`: The token checks that are performed when revoking tokens.
+| Environment Variable       | Description                                                            |
+|----------------------------|------------------------------------------------------------------------|
+| FLASK_APP                  | The name of the Flask application.                                      |
+| FLASK_ENV                  | The environment in which the application is running.                   |
+| SECRET_KEY                 | The secret key used for encrypting data.                                |
+| DATABASE_URL               | The URL for the PostgreSQL database.                                    |
+| JWT_ACCESS_TOKEN_EXPIRES   | The time in seconds for the access token to expire.                     |
+| JWT_REFRESH_TOKEN_EXPIRES  | The time in seconds for the refresh token to expire.                    |
+| JWT_BLACKLIST_ENABLED      | Boolean value to enable/disable token revocation.                       |
+| JWT_BLACKLIST_TOKEN_CHECKS | The token checks that are performed when revoking tokens.               |
 
-## Usage
 
-The Shopbridge Flask app provides the following API endpoints:
+##API Reference
+-------------
 
-- `/api/auth/register`: Register a new user.
-- `/api/auth/login`: Authenticate and log in a user.
-- `/api/auth/logout`: Log out a user and revoke their access token.
-- `/api/auth/refresh`: Generate a new access token using the refresh token.
-- `/api/products`: Get a list of all products or create a new product.
-- `/api/products/<product-id>`: Get, update, or delete a specific product.
+The API of the Shopbridge application is RESTful and uses JSON for data exchange. Here are the available endpoints:
+
+| Method | Endpoint | Description | Requires Authentication |
+| ------ | -------- | ----------- | ------------------------|
+| POST   | /api/auth/register | Register a new user. | No |
+| POST   | /api/auth/login | Login as an existing user. | No |
+| DELETE | /api/auth/logout | Logout the current user. | Yes |
+| POST   | /api/auth/refresh | Refresh the access token of the current user. | Yes |
+| GET    | /api/items | Get a list of all items. | No |
+| GET    | /api/items/<int:id> | Get a item by ID. | No |
+| POST   | /api/items | Create a new item. | Yes |
+| PUT    | /api/items/<int:id> | Update a item by ID. | Yes |
+| DELETE | /api/items/<int:id> | Delete a item by ID. | Yes |
+
 
 ## Attributes
 
