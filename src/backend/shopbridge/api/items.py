@@ -106,4 +106,7 @@ async def bulk_insert_items():
 @items_bp.route("/health")
 @jwt_required()
 def health():
+    current_user = get_jwt_identity() 
+    if not current_user:
+        return jsonify({'error': 'User not authenticated.'}), 401
     return Response("OK", status=200)

@@ -19,9 +19,15 @@ def create_app(config_class):
         
         from .api import items
         from .views import auth
+        from .models.revoked_token import RevokedToken
         app.register_blueprint(items.items_bp)
         app.register_blueprint(auth.auth_bp)
 
+        @jwt.token_in_blocklist_loader
+        def check_if_token_revoked(jwt_header, jwt_payload: dict) -> bool:
+            jti = jwt_payload['jti']
+            token = RevokedToken.query.filter_by(jti=jti).first()
+            return token is not None
         # create database if it doesn't exist
         if not database_exists(app.config['SQLALCHEMY_DATABASE_URI']):
             create_database(app.config['SQLALCHEMY_DATABASE_URI'])

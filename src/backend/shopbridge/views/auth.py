@@ -1,7 +1,8 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask_jwt_extended import get_jwt_identity, jwt_required, get_jwt , unset_jwt_cookies
 
 from shopbridge.models.user import User
+from shopbridge.models.revoked_token import RevokedToken
 from shopbridge.utils.auth import generate_jwt_tokens, authenticate_user
 from shopbridge import db
 
@@ -46,6 +47,19 @@ def login():
          'refresh_token': refresh_token,
          'refresh_token_expire':refresh_token_expire
          }), 201
+
+@auth_bp.route('/logout', methods=['DELETE'])
+@jwt_required(verify_type=False)
+def logout():
+    token = get_jwt()
+    jti = token['jti']
+    user_id = get_jwt_identity()
+    token = RevokedToken(jti=jti,user_id=user_id)
+    db.session.add(token)
+    db.session.commit()
+    response = jsonify({"msg": "Successfully logged out."})
+    unset_jwt_cookies(response)
+    return response, 200
 
 @auth_bp.route('/refresh', methods=['POST'])
 @jwt_required(refresh=True)
