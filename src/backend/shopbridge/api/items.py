@@ -1,11 +1,17 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request,Response
+from flask_jwt_extended import jwt_required, get_jwt_identity
+
 from shopbridge.models.items import Item
 from shopbridge import db
 
 items_bp = Blueprint('items_bp', __name__, url_prefix='/api/items')
 
 @items_bp.route('/', methods=['POST'])
+@jwt_required()
 async def create_item():
+    current_user = get_jwt_identity()
+    if not current_user:
+        return jsonify({'error': 'User not authenticated.'}), 401
     data = request.json
     name = data.get('name')
     description = data.get('description')
@@ -73,3 +79,9 @@ async def bulk_insert_items():
     db.session.bulk_save_objects(items)
     db.session.commit()
     return jsonify({'message': f'{len(items)} items inserted.'})
+
+
+@items_bp.route("/health")
+@jwt_required()
+def health():
+    return Response("OK", status=200)
