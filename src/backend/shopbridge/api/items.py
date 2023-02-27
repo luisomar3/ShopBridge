@@ -24,7 +24,12 @@ async def create_item():
     return jsonify({'id': item.id, 'name': item.name, 'description': item.description, 'price': item.price}), 201
 
 @items_bp.route('/<int:item_id>', methods=['PUT'])
+@jwt_required()
 async def update_item(item_id):
+    current_user = get_jwt_identity()
+    if not current_user:
+        return jsonify({'error': 'User not authenticated.'}), 401
+    
     item = Item.query.get(item_id)
     if not item:
         return jsonify({'error': f'Item with id {item_id} not found.'}), 404
@@ -40,6 +45,10 @@ async def update_item(item_id):
 
 @items_bp.route('/<int:item_id>', methods=['DELETE'])
 async def delete_item(item_id):
+    current_user = get_jwt_identity()
+    if not current_user:
+        return jsonify({'error': 'User not authenticated.'}), 401
+    
     item = Item.query.get(item_id)
     if not item:
         return jsonify({'error': f'Item with id {item_id} not found.'}), 404
@@ -48,12 +57,18 @@ async def delete_item(item_id):
     return jsonify({'message': f'Item with id {item_id} deleted.'})
 
 @items_bp.route('/', methods=['GET'])
-async def list_items():    
+async def list_items():
+    current_user = get_jwt_identity()
+    if not current_user:
+        return jsonify({'error': 'User not authenticated.'}), 401    
     items = Item.query.all()
     return jsonify([{'id': item.id, 'name': item.name, 'description': item.description, 'price': item.price} for item in items])
 
 @items_bp.route('/<int:id>', methods=['GET'])
 async def get_item(id):
+    current_user = get_jwt_identity()
+    if not current_user:
+        return jsonify({'error': 'User not authenticated.'}), 401
     item = Item.query.get(id)
     if item:
         return jsonify({'id': item.id, 'name': item.name, 'description': item.description, 'price': item.price})
@@ -62,6 +77,9 @@ async def get_item(id):
     
 @items_bp.route('/bulk', methods=['POST'])
 async def bulk_insert_items():
+    current_user = get_jwt_identity()
+    if not current_user:
+        return jsonify({'error': 'User not authenticated.'}), 401
     data = request.json
     if not data:
         return jsonify({'error': 'No data provided.'}), 400
