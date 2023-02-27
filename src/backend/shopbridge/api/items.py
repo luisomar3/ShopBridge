@@ -44,6 +44,7 @@ async def update_item(item_id):
     return jsonify({'id': item.id, 'name': item.name, 'description': item.description, 'price': item.price})
 
 @items_bp.route('/<int:item_id>', methods=['DELETE'])
+@jwt_required()
 async def delete_item(item_id):
     current_user = get_jwt_identity()
     if not current_user:
@@ -57,6 +58,7 @@ async def delete_item(item_id):
     return jsonify({'message': f'Item with id {item_id} deleted.'})
 
 @items_bp.route('/', methods=['GET'])
+@jwt_required()
 async def list_items():
     current_user = get_jwt_identity()
     if not current_user:
@@ -65,6 +67,7 @@ async def list_items():
     return jsonify([{'id': item.id, 'name': item.name, 'description': item.description, 'price': item.price} for item in items])
 
 @items_bp.route('/<int:id>', methods=['GET'])
+@jwt_required()
 async def get_item(id):
     current_user = get_jwt_identity()
     if not current_user:
@@ -76,6 +79,7 @@ async def get_item(id):
         return jsonify({'error': 'Item not found'})
     
 @items_bp.route('/bulk', methods=['POST'])
+@jwt_required()
 async def bulk_insert_items():
     current_user = get_jwt_identity()
     if not current_user:
