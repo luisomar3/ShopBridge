@@ -31,6 +31,7 @@ def create_app(config_class):
         # create database if it doesn't exist
         if not database_exists(app.config['SQLALCHEMY_DATABASE_URI']):
             create_database(app.config['SQLALCHEMY_DATABASE_URI'])
+        
         db.create_all()
 
     return app
