@@ -102,7 +102,7 @@ async def bulk_insert_items():
     db.session.commit()
     return jsonify({'message': f'{len(items)} items inserted.'})
 
-@items_bp.route("/ping",mmethods=['GET'])
+@items_bp.route("/ping",methods=['GET'])
 @jwt_required()
 def health():
     return Response("OK", status=200)
