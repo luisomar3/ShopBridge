@@ -1,11 +1,17 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request,Response
+from flask_jwt_extended import jwt_required, get_jwt_identity
+
 from shopbridge.models.items import Item
 from shopbridge import db
 
 items_bp = Blueprint('items_bp', __name__, url_prefix='/api/items')
 
 @items_bp.route('/', methods=['POST'])
+@jwt_required()
 async def create_item():
+    current_user = get_jwt_identity()
+    if not current_user:
+        return jsonify({'error': 'User not authenticated.'}), 401
     data = request.json
     name = data.get('name')
     description = data.get('description')
@@ -18,7 +24,12 @@ async def create_item():
     return jsonify({'id': item.id, 'name': item.name, 'description': item.description, 'price': item.price}), 201
 
 @items_bp.route('/<int:item_id>', methods=['PUT'])
+@jwt_required()
 async def update_item(item_id):
+    current_user = get_jwt_identity()
+    if not current_user:
+        return jsonify({'error': 'User not authenticated.'}), 401
+    
     item = Item.query.get(item_id)
     if not item:
         return jsonify({'error': f'Item with id {item_id} not found.'}), 404
@@ -33,7 +44,12 @@ async def update_item(item_id):
     return jsonify({'id': item.id, 'name': item.name, 'description': item.description, 'price': item.price})
 
 @items_bp.route('/<int:item_id>', methods=['DELETE'])
+@jwt_required()
 async def delete_item(item_id):
+    current_user = get_jwt_identity()
+    if not current_user:
+        return jsonify({'error': 'User not authenticated.'}), 401
+    
     item = Item.query.get(item_id)
     if not item:
         return jsonify({'error': f'Item with id {item_id} not found.'}), 404
@@ -42,12 +58,20 @@ async def delete_item(item_id):
     return jsonify({'message': f'Item with id {item_id} deleted.'})
 
 @items_bp.route('/', methods=['GET'])
-async def list_items():    
+@jwt_required()
+async def list_items():
+    current_user = get_jwt_identity()
+    if not current_user:
+        return jsonify({'error': 'User not authenticated.'}), 401    
     items = Item.query.all()
     return jsonify([{'id': item.id, 'name': item.name, 'description': item.description, 'price': item.price} for item in items])
 
 @items_bp.route('/<int:id>', methods=['GET'])
+@jwt_required()
 async def get_item(id):
+    current_user = get_jwt_identity()
+    if not current_user:
+        return jsonify({'error': 'User not authenticated.'}), 401
     item = Item.query.get(id)
     if item:
         return jsonify({'id': item.id, 'name': item.name, 'description': item.description, 'price': item.price})
@@ -55,7 +79,11 @@ async def get_item(id):
         return jsonify({'error': 'Item not found'})
     
 @items_bp.route('/bulk', methods=['POST'])
+@jwt_required()
 async def bulk_insert_items():
+    current_user = get_jwt_identity()
+    if not current_user:
+        return jsonify({'error': 'User not authenticated.'}), 401
     data = request.json
     if not data:
         return jsonify({'error': 'No data provided.'}), 400
@@ -73,3 +101,7 @@ async def bulk_insert_items():
     db.session.bulk_save_objects(items)
     db.session.commit()
     return jsonify({'message': f'{len(items)} items inserted.'})
+
+@items_bp.route("/ping",methods=['GET'])
+def health():
+    return Response("OK", status=200)
