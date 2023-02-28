@@ -3,10 +3,12 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from shopbridge.models.items import Item
 from shopbridge import db
+from shopbridge.utils.exception_handler import handle_exceptions
 
 items_bp = Blueprint('items_bp', __name__, url_prefix='/api/items')
 
 @items_bp.route('/', methods=['POST'])
+@handle_exceptions
 @jwt_required()
 async def create_item():
     current_user = get_jwt_identity()
@@ -21,9 +23,11 @@ async def create_item():
     item = Item(name=name, description=description, price=price)
     db.session.add(item)
     db.session.commit()
+    
     return jsonify({'id': item.id, 'name': item.name, 'description': item.description, 'price': item.price}), 201
 
 @items_bp.route('/<int:item_id>', methods=['PUT'])
+@handle_exceptions
 @jwt_required()
 async def update_item(item_id):
     current_user = get_jwt_identity()
@@ -44,6 +48,7 @@ async def update_item(item_id):
     return jsonify({'id': item.id, 'name': item.name, 'description': item.description, 'price': item.price})
 
 @items_bp.route('/<int:item_id>', methods=['DELETE'])
+@handle_exceptions
 @jwt_required()
 async def delete_item(item_id):
     current_user = get_jwt_identity()
@@ -58,6 +63,7 @@ async def delete_item(item_id):
     return jsonify({'message': f'Item with id {item_id} deleted.'})
 
 @items_bp.route('/', methods=['GET'])
+@handle_exceptions
 @jwt_required()
 async def list_items():
     current_user = get_jwt_identity()
@@ -67,6 +73,7 @@ async def list_items():
     return jsonify([{'id': item.id, 'name': item.name, 'description': item.description, 'price': item.price} for item in items])
 
 @items_bp.route('/<int:id>', methods=['GET'])
+@handle_exceptions
 @jwt_required()
 async def get_item(id):
     current_user = get_jwt_identity()
@@ -79,6 +86,7 @@ async def get_item(id):
         return jsonify({'error': 'Item not found'})
     
 @items_bp.route('/bulk', methods=['POST'])
+@handle_exceptions
 @jwt_required()
 async def bulk_insert_items():
     current_user = get_jwt_identity()
@@ -102,6 +110,7 @@ async def bulk_insert_items():
     db.session.commit()
     return jsonify({'message': f'{len(items)} items inserted.'})
 
+@handle_exceptions
 @items_bp.route("/ping",methods=['GET'])
 def health():
     return Response("OK", status=200)
