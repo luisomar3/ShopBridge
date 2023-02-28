@@ -34,7 +34,7 @@ async def update_item(item_id):
     if not current_user:
         return jsonify({'error': 'User not authenticated.'}), 401
     
-    item = Item.query.get(item_id)
+    item = db.session.get(Item,item_id)
     if not item:
         return jsonify({'error': f'Item with id {item_id} not found.'}), 404
     data = request.json
@@ -55,7 +55,7 @@ async def delete_item(item_id):
     if not current_user:
         return jsonify({'error': 'User not authenticated.'}), 401
     
-    item = Item.query.get(item_id)
+    item = db.session.get(Item,item_id)
     if not item:
         return jsonify({'error': f'Item with id {item_id} not found.'}), 404
     db.session.delete(item)
@@ -69,21 +69,21 @@ async def list_items():
     current_user = get_jwt_identity()
     if not current_user:
         return jsonify({'error': 'User not authenticated.'}), 401    
-    items = Item.query.all()
+    items = db.session.query(Item).all()
     return jsonify([{'id': item.id, 'name': item.name, 'description': item.description, 'price': item.price} for item in items])
 
-@items_bp.route('/<int:id>', methods=['GET'])
+@items_bp.route('/<int:item_id>', methods=['GET'])
 @handle_exceptions
 @jwt_required()
-async def get_item(id):
+async def get_item(item_id):
     current_user = get_jwt_identity()
     if not current_user:
         return jsonify({'error': 'User not authenticated.'}), 401
-    item = Item.query.get(id)
+    item = db.session.get(Item,item_id)
     if item:
         return jsonify({'id': item.id, 'name': item.name, 'description': item.description, 'price': item.price})
     else:
-        return jsonify({'error': 'Item not found'})
+        return jsonify({'error': 'Item not found'}),404
     
 @items_bp.route('/bulk', methods=['POST'])
 @handle_exceptions
@@ -108,7 +108,7 @@ async def bulk_insert_items():
         items.append(item)
     db.session.bulk_save_objects(items)
     db.session.commit()
-    return jsonify({'message': f'{len(items)} items inserted.'})
+    return jsonify({'message': f'{len(items)} items inserted.'}),201
 
 @handle_exceptions
 @items_bp.route("/ping",methods=['GET'])
