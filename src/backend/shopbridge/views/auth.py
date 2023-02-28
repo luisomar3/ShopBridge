@@ -5,10 +5,12 @@ from shopbridge.models.user import User
 from shopbridge.models.revoked_token import RevokedToken
 from shopbridge.utils.auth import generate_jwt_tokens, authenticate_user
 from shopbridge import db
+from shopbridge.utils.exception_handler import handle_exceptions
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
 @auth_bp.route('/register', methods=['POST'])
+@handle_exceptions
 def register():
     data = request.json
     email = data.get('email')
@@ -24,13 +26,13 @@ def register():
     access_token,access_token_expires,refresh_token,refresh_token_expire = generate_jwt_tokens(user)
     return jsonify(
         {'access_token': access_token, 
-         'access_token_expires':access_token_expires,
-         'refresh_token': refresh_token,
-         'refresh_token_expire':refresh_token_expire
-         }), 201
-
+        'access_token_expires':access_token_expires,
+        'refresh_token': refresh_token,
+        'refresh_token_expire':refresh_token_expire
+        }), 201
 
 @auth_bp.route('/login', methods=['POST'])
+@handle_exceptions
 def login():
     data = request.json
     email = data.get('email')
@@ -49,6 +51,7 @@ def login():
          }), 201
 
 @auth_bp.route('/logout', methods=['DELETE'])
+@handle_exceptions
 @jwt_required(verify_type=False)
 def logout():
     token = get_jwt()
@@ -62,6 +65,7 @@ def logout():
     return response, 200
 
 @auth_bp.route('/refresh', methods=['POST'])
+@handle_exceptions
 @jwt_required(refresh=True)
 def refresh():
     current_user_id = get_jwt_identity()
