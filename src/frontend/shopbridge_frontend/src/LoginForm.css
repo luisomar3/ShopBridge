@@ -1,0 +1,13 @@
+.login-form-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('https://cdn.example.com/background-image.jpg');
+    background-size: cover;
+  }
+  
+  .login-form-card {
+    width: 400px;
+  }
+  
