@@ -64,5 +64,11 @@ npm start
 
 4. Open your browser and navigate to [http://localhost:3000](http://localhost:3000) to view the Shopbridge app frontend.
 
+
+## Note
+
+Here is [Swagger Docs](https://app.swaggerhub.com/apis-docs/luisomar3/ShopBridge/1.0#/default/get_api_items__id_) for the flask API
+
+Inside backend and frontend folder you will find specific instruction and docs, on the backend folder you can find the API docs.
 License
 This project is licensed under the [MIT License](https://opensource.org/license/mit/)
