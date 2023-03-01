@@ -7,7 +7,7 @@ Shopbridge is a simple inventory management system that allows users to add, edi
 
 ## Backend
 
-1.Clone this repository
+1. Clone this repository
 
 ```
 git clone https://github.com/your-username/shopbridge.git
@@ -28,12 +28,13 @@ docker run --name db -e POSTGRES_DB=shopbridge_dev -e POSTGRES_USER=postgres -e 
 ```
 docker build -t flask-app .
 
+```
 
 5. Run the Flask app Docker container:
 
 ```
 docker run -d --rm --name flask-web -p 8000:8000 --link db:db -w /app/backend flask-app
-
+```
 
 ## React Installation
 
@@ -46,7 +47,6 @@ docker run -d --rm --name flask-web -p 8000:8000 --link db:db -w /app/backend fl
 
 ```
 cd frontend
-
 ```
 
 
@@ -54,14 +54,12 @@ cd frontend
 
 ```
 npm install
-
 ```
 
 3. Start the React app:
 
 ```
 npm start
-
 ```
 
 4. Open your browser and navigate to [http://localhost:3000](http://localhost:3000) to view the Shopbridge app frontend.
