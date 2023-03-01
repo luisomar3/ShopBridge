@@ -7,10 +7,12 @@ from shopbridge.utils.exception_handler import handle_exceptions
 
 items_bp = Blueprint('items_bp', __name__, url_prefix='/api/items')
 
-@items_bp.route('/', methods=['POST'])
+
+@items_bp.route('/')
 @handle_exceptions
 @jwt_required()
 async def create_item():
+    print(request)
     current_user = get_jwt_identity()
     if not current_user:
         return jsonify({'error': 'User not authenticated.'}), 401

@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_utils import database_exists, create_database
 from flask_migrate import Migrate
@@ -10,13 +11,14 @@ db = SQLAlchemy()
 
 def create_app(config_class):
     app = Flask(__name__)
+    
     app.config.from_object(config_class)
     jwt = JWTManager(app)
     
     db.init_app(app)
     migrate = Migrate(app, db)
     with app.app_context():
-        
+        CORS(app,resources={r"/*": {"origins": "*"}})    
         from .api import items
         from .views import auth
         from .models.revoked_token import RevokedToken
